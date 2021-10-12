@@ -1,3 +1,4 @@
+GOBIN=/usr/local/go/bin
 
 case "$1" in
   start)
