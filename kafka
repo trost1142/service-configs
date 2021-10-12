@@ -1,0 +1,35 @@
+DAEMON_PATH=/etc/kafka/kafka
+PATH=$PATH:$DAEMON_PATH/bin
+
+case "$1" in
+  start)
+        # Start daemon
+        echo "Starting Kafka";
+        nohup $DAEMON_PATH/bin/kafka-server-start.sh $DAEMON_PATH/config/server.properties > $DAEMON_PATH/kafka.log 2>&1 &
+        ;;
+  stop)
+        # Stop daemon
+        echo "Shutting down Kafka";
+        $DAEMON_PATH/bin/kafka-server-stop.sh
+        ;;
+  restart)
+        # Restart daemon
+        $0 stop
+        sleep 2
+        $0 start
+        ;;
+  status)
+        pid=`ps ax | grep -i 'kafka.Kafka' | grep -v grep | awk '{print $1}'`
+        if [ -n "$pid" ]
+          then
+          echo "Kafka running with pid: $pid"
+        else
+          echo "Kafka not running"
+        fi
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac
+
+exit 0
