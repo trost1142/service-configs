@@ -1,0 +1,39 @@
+
+case "$1" in
+  start)
+        # Start daemon
+        echo "Starting Delivery Agent";
+        nohup $GOBIN/delivery-agent > /var/log/delivery-agent-output.log 2>&1 &
+        ;;
+  stop)
+        # Stop daemon
+        echo "Shutting down Delivery Agent";
+        pid=`ps ax | grep -i 'delivery-agent' | grep -v grep | awk '{print $1}'`
+        if [ -n "$pid" ]
+          then
+          kill -9 $pid
+        else
+          echo "Pid doesn't exist"
+        fi
+        ;;
+  restart)
+        # Restart daemon
+        $0 stop
+        sleep 2
+        $0 start
+        ;;
+  status)
+        pid=`ps ax | grep -i 'delivery-agent' | grep -v grep | awk '{print $1}'`
+        if [ -n "$pid" ]
+          then
+          echo "delivery-agent running with pid: $pid"
+        else
+          echo "delivery-agent not running"
+        fi
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac
+
+exit 0
